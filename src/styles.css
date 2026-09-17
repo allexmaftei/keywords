@@ -1,278 +1,501 @@
-const subjects = [
-  {
-    id: 'biology',
-    name: 'Biology',
-    short: 'BIO',
-    color: '#43c59e',
-    accent: '#baf6d8',
-    chapters: [
-      { title: 'Cells', cards: 18 },
-      { title: 'Photosynthesis', cards: 12 },
-      { title: 'Genetics', cards: 21 },
-    ],
-  },
-  {
-    id: 'chemistry',
-    name: 'Chemistry',
-    short: 'CHEM',
-    color: '#ff7a59',
-    accent: '#ffd6b8',
-    chapters: [
-      { title: 'Atomic Structure', cards: 15 },
-      { title: 'Bonding', cards: 20 },
-      { title: 'Rates of Reaction', cards: 14 },
-    ],
-  },
-  {
-    id: 'physics',
-    name: 'Physics',
-    short: 'PHYS',
-    color: '#5b7cff',
-    accent: '#dfe7ff',
-    chapters: [
-      { title: 'Forces', cards: 17 },
-      { title: 'Electricity', cards: 19 },
-      { title: 'Waves', cards: 16 },
-    ],
-  },
-  {
-    id: 'maths',
-    name: 'Maths',
-    short: 'MATH',
-    color: '#ffbf47',
-    accent: '#ffeeb0',
-    chapters: [
-      { title: 'Algebra', cards: 23 },
-      { title: 'Geometry', cards: 15 },
-      { title: 'Statistics', cards: 18 },
-    ],
-  },
-  {
-    id: 'english',
-    name: 'English',
-    short: 'ENG',
-    color: '#d976ff',
-    accent: '#f2d2ff',
-    chapters: [
-      { title: 'Language Analysis', cards: 14 },
-      { title: 'Poetry', cards: 12 },
-      { title: 'Literature Terms', cards: 16 },
-    ],
-  },
-  {
-    id: 'economics',
-    name: 'Economics',
-    short: 'ECO',
-    color: '#5ad0b2',
-    accent: '#d5fff3',
-    chapters: [
-      { title: 'Demand & Supply', cards: 20 },
-      { title: 'Markets', cards: 13 },
-      { title: 'Macro', cards: 17 },
-    ],
-  },
-];
-
-const keywordCards = [
-  {
-    subject: 'biology',
-    chapter: 'Cells',
-    term: 'Osmosis',
-    prompt: 'What is the movement of water molecules across a partially permeable membrane from a dilute to a concentrated solution called?',
-    answer: 'Osmosis',
-    difficulty: 'Medium',
-  },
-  {
-    subject: 'chemistry',
-    chapter: 'Bonding',
-    term: 'Covalent Bond',
-    prompt: 'What type of bond is formed when atoms share a pair of electrons?',
-    answer: 'Covalent bond',
-    difficulty: 'Easy',
-  },
-  {
-    subject: 'physics',
-    chapter: 'Electricity',
-    term: 'Resistance',
-    prompt: 'What property of a component opposes the flow of current and is measured in ohms?',
-    answer: 'Resistance',
-    difficulty: 'Medium',
-  },
-  {
-    subject: 'maths',
-    chapter: 'Algebra',
-    term: 'Quadratic',
-    prompt: 'What is the name of a polynomial equation with degree 2, such as ax² + bx + c = 0?',
-    answer: 'Quadratic',
-    difficulty: 'Hard',
-  },
-  {
-    subject: 'english',
-    chapter: 'Language Analysis',
-    term: 'Metaphor',
-    prompt: 'What device compares one thing to another by saying it is something else without using “like” or “as”?',
-    answer: 'Metaphor',
-    difficulty: 'Easy',
-  },
-  {
-    subject: 'economics',
-    chapter: 'Demand & Supply',
-    term: 'Elasticity',
-    prompt: 'What concept measures how responsive quantity demanded is to a change in price?',
-    answer: 'Price elasticity of demand',
-    difficulty: 'Hard',
-  },
-];
-
-const quickQuiz = [
-  { question: 'Which term describes the spread of particles from high concentration to low concentration?', choices: ['Diffusion', 'Osmosis', 'Active transport', 'Transpiration'], answer: 'Diffusion' },
-  { question: 'What word means the rate at which something changes over time in a reaction?', choices: ['Catalyst', 'Equilibrium', 'Rate', 'Energy'], answer: 'Rate' },
-  { question: 'Which term describes energy transferred per unit charge?', choices: ['Resistance', 'Voltage', 'Current', 'Power'], answer: 'Voltage' },
-];
-
-const progression = [
-  { label: 'Cards mastered', value: '1,248' },
-  { label: 'Streak', value: '17 days' },
-  { label: 'Accuracy', value: '92%' },
-  { label: 'XP', value: '4,680' },
-];
-
-const totalCards = subjects.reduce((sum, subject) => sum + subject.chapters.reduce((chapterSum, chapter) => chapterSum + chapter.cards, 0), 0);
-
-function App() {
-  const currentCard = keywordCards[0];
-  const subjectData = subjects[0];
-
-  return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand-wrap">
-          <div className="brand-mark">K</div>
-          <div>
-            <p className="eyebrow">REVISION LAB</p>
-            <h1>KeyPulse</h1>
-          </div>
-        </div>
-
-        <nav className="nav">
-          <button className="nav-item active">Dashboard</button>
-          <button className="nav-item">Decks</button>
-          <button className="nav-item">Quest Mode</button>
-          <button className="nav-item">Progress</button>
-        </nav>
-
-        <div className="mini-card xp-card">
-          <span>Daily goal</span>
-          <strong>74%</strong>
-          <div className="progress-bar"><span /></div>
-          <small>12/16 cards</small>
-        </div>
-      </aside>
-
-      <main className="main-panel">
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">Study flow</p>
-            <h2>Keyword blitz</h2>
-          </div>
-
-          <div className="top-actions">
-            <button className="ghost-btn">Filter</button>
-            <button className="primary-btn">+ New deck</button>
-          </div>
-        </header>
-
-        <section className="stat-grid">
-          {progression.map((item) => (
-            <div key={item.label} className="stat-card">
-              <span>{item.label}</span>
-              <strong>{item.value}</strong>
-            </div>
-          ))}
-        </section>
-
-        <section className="hero-row">
-          <div className="flashcard-panel">
-            <div className="flashcard-header">
-              <span className="subject-pill" style={{ background: `${subjectData.color}22`, color: subjectData.color }}>
-                {subjectData.name}
-              </span>
-              <span className="chip subtle">Chapter: {currentCard.chapter}</span>
-            </div>
-
-            <div className="flashcard">
-              <p className="label">Prompt</p>
-              <h3>{currentCard.prompt}</h3>
-              <div className="flashcard-answer">
-                <span>Reveal answer</span>
-                <strong>{currentCard.answer}</strong>
-              </div>
-            </div>
-
-            <div className="score-row">
-              <button className="score-btn hard">Again</button>
-              <button className="score-btn">Hard</button>
-              <button className="score-btn good">Good</button>
-              <button className="score-btn easy">Easy</button>
-            </div>
-          </div>
-
-          <div className="quest-panel">
-            <div className="quest-header">
-              <p className="eyebrow">Quick play</p>
-              <h3>Rapid fire</h3>
-            </div>
-
-            {quickQuiz.map((item, index) => (
-              <div key={item.question} className="quiz-item">
-                <span className="quiz-index">0{index + 1}</span>
-                <p>{item.question}</p>
-                <div className="choice-grid">
-                  {item.choices.map((choice) => (
-                    <button key={choice} className={`choice ${choice === item.answer ? 'correct' : ''}`}>
-                      {choice}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="library-panel">
-          <div className="panel-title-row">
-            <div>
-              <p className="eyebrow">Library</p>
-              <h3>Subject decks</h3>
-            </div>
-            <button className="ghost-btn">See all</button>
-          </div>
-
-          <div className="deck-grid">
-            {subjects.map((subject) => (
-              <article key={subject.id} className="deck-card" style={{ borderColor: `${subject.color}55` }}>
-                <div className="deck-topline">
-                  <span className="subject-dot" style={{ background: subject.color }} />
-                  <span>{subject.short}</span>
-                </div>
-
-                <h4>{subject.name}</h4>
-
-                <ul>
-                  {subject.chapters.map((chapter) => (
-                    <li key={chapter.title}>
-                      <span>{chapter.title}</span>
-                      <strong>{chapter.cards}</strong>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </section>
-      </main>
-    </div>
-  );
+* {
+  box-sizing: border-box;
 }
 
-export default App;
+:root {
+  --bg: #0b1220;
+  --bg-soft: #101a2a;
+  --panel: rgba(17, 24, 39, 0.82);
+  --panel-strong: #0e1727;
+  --primary: #8b5cf6;
+  --text: #edf3ff;
+  --muted: #aab8d0;
+  --line: rgba(255, 255, 255, 0.08);
+  --shadow: 0 24px 50px rgba(6, 10, 18, 0.36);
+  --success: #3fdb9d;
+  --warning: #fbbf24;
+  --danger: #ff7c7c;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(139, 92, 246, 0.26), transparent 20%),
+    radial-gradient(circle at 100% 0%, rgba(59, 130, 246, 0.18), transparent 18%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+button {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  padding: 24px;
+  gap: 24px;
+}
+
+.sidebar,
+.main-panel {
+  background: rgba(13, 20, 31, 0.8);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.sidebar {
+  width: 280px;
+  border-radius: 28px;
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 8px 18px;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8b5cf6, #4fd1c5);
+  box-shadow: 0 12px 26px rgba(139, 92, 246, 0.46);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.brand-wrap h1,
+.topbar h2,
+.quest-header h3,
+.panel-title-row h3 {
+  margin: 4px 0 0;
+  font-weight: 800;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-item {
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(52, 211, 153, 0.1));
+  border-color: rgba(137, 92, 246, 0.35);
+}
+
+.mini-card {
+  margin-top: auto;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.015);
+  padding: 16px;
+}
+
+.mini-card span,
+.mini-card small {
+  color: var(--muted);
+}
+
+.mini-card strong {
+  display: block;
+  font-size: 2rem;
+  margin: 8px 0 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.progress-bar span {
+  display: block;
+  width: 74%;
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #34d399);
+}
+
+.main-panel {
+  flex: 1;
+  border-radius: 30px;
+  padding: 24px;
+}
+
+.topbar,
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.ghost-btn,
+.primary-btn,
+.score-btn,
+.choice,
+.subject-pill {
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.ghost-btn {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  padding: 10px 14px;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #8b5cf6, #4fd1c5);
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  box-shadow: 0 14px 26px rgba(139, 92, 246, 0.34);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.stat-card {
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 18px 16px;
+}
+
+.stat-card span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.stat-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 1.8rem;
+}
+
+.hero-row {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 20px;
+}
+
+.flashcard-panel,
+.quest-panel,
+.library-panel {
+  border-radius: 24px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.015);
+  padding: 18px;
+}
+
+.subject-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.subject-pill {
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.subject-pill.active {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.flashcard {
+  margin-top: 16px;
+  border-radius: 24px;
+  padding: 22px 20px;
+  background: linear-gradient(160deg, rgba(139, 92, 246, 0.18), rgba(8, 14, 23, 0.85));
+  border: 1px solid rgba(139, 92, 246, 0.18);
+}
+
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.tag-muted {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+}
+
+.label {
+  margin: 18px 0 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.flashcard h3 {
+  margin: 8px 0 18px;
+  font-size: clamp(1.5rem, 2vw, 2.2rem);
+  line-height: 1.35;
+}
+
+.flashcard-answer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 14px;
+  color: var(--muted);
+}
+
+.flashcard-answer strong {
+  color: var(--text);
+  font-size: 1.06rem;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.score-btn {
+  border: none;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-weight: 700;
+  padding: 10px 12px;
+}
+
+.score-btn.hard {
+  background: rgba(255, 124, 124, 0.12);
+  color: #ffb3b3;
+}
+
+.score-btn.good {
+  background: rgba(63, 219, 157, 0.12);
+  color: #b7f5d9;
+}
+
+.score-btn.easy {
+  background: rgba(96, 165, 250, 0.12);
+  color: #bdd8ff;
+}
+
+.quest-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quiz-item {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.quiz-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.quiz-index {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-weight: 800;
+  color: #a78bfa;
+}
+
+.quiz-item p {
+  margin: 0 0 10px;
+  line-height: 1.5;
+}
+
+.choice-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.choice {
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.choice.correct {
+  background: rgba(63, 219, 157, 0.12);
+  border-color: rgba(63, 219, 157, 0.35);
+  color: #bff7de;
+}
+
+.library-panel {
+  margin-top: 26px;
+}
+
+.deck-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.deck-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,0.02);
+  padding: 16px;
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.deck-card.selected {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(0,0,0,0.15);
+}
+
+.deck-topline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.subject-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.deck-card h4 {
+  margin: 16px 0 6px;
+  font-size: 1.16rem;
+}
+
+.deck-card p {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.deck-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.deck-card li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.deck-card li strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+@media (max-width: 1100px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .hero-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    padding: 14px;
+  }
+
+  .main-panel,
+  .sidebar {
+    border-radius: 22px;
+    padding: 16px;
+  }
+
+  .stat-grid,
+  .deck-grid,
+  .score-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .topbar,
+  .panel-title-row,
+  .flashcard-answer,
+  .card-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+

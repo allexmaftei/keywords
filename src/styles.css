@@ -1,0 +1,278 @@
+const subjects = [
+  {
+    id: 'biology',
+    name: 'Biology',
+    short: 'BIO',
+    color: '#43c59e',
+    accent: '#baf6d8',
+    chapters: [
+      { title: 'Cells', cards: 18 },
+      { title: 'Photosynthesis', cards: 12 },
+      { title: 'Genetics', cards: 21 },
+    ],
+  },
+  {
+    id: 'chemistry',
+    name: 'Chemistry',
+    short: 'CHEM',
+    color: '#ff7a59',
+    accent: '#ffd6b8',
+    chapters: [
+      { title: 'Atomic Structure', cards: 15 },
+      { title: 'Bonding', cards: 20 },
+      { title: 'Rates of Reaction', cards: 14 },
+    ],
+  },
+  {
+    id: 'physics',
+    name: 'Physics',
+    short: 'PHYS',
+    color: '#5b7cff',
+    accent: '#dfe7ff',
+    chapters: [
+      { title: 'Forces', cards: 17 },
+      { title: 'Electricity', cards: 19 },
+      { title: 'Waves', cards: 16 },
+    ],
+  },
+  {
+    id: 'maths',
+    name: 'Maths',
+    short: 'MATH',
+    color: '#ffbf47',
+    accent: '#ffeeb0',
+    chapters: [
+      { title: 'Algebra', cards: 23 },
+      { title: 'Geometry', cards: 15 },
+      { title: 'Statistics', cards: 18 },
+    ],
+  },
+  {
+    id: 'english',
+    name: 'English',
+    short: 'ENG',
+    color: '#d976ff',
+    accent: '#f2d2ff',
+    chapters: [
+      { title: 'Language Analysis', cards: 14 },
+      { title: 'Poetry', cards: 12 },
+      { title: 'Literature Terms', cards: 16 },
+    ],
+  },
+  {
+    id: 'economics',
+    name: 'Economics',
+    short: 'ECO',
+    color: '#5ad0b2',
+    accent: '#d5fff3',
+    chapters: [
+      { title: 'Demand & Supply', cards: 20 },
+      { title: 'Markets', cards: 13 },
+      { title: 'Macro', cards: 17 },
+    ],
+  },
+];
+
+const keywordCards = [
+  {
+    subject: 'biology',
+    chapter: 'Cells',
+    term: 'Osmosis',
+    prompt: 'What is the movement of water molecules across a partially permeable membrane from a dilute to a concentrated solution called?',
+    answer: 'Osmosis',
+    difficulty: 'Medium',
+  },
+  {
+    subject: 'chemistry',
+    chapter: 'Bonding',
+    term: 'Covalent Bond',
+    prompt: 'What type of bond is formed when atoms share a pair of electrons?',
+    answer: 'Covalent bond',
+    difficulty: 'Easy',
+  },
+  {
+    subject: 'physics',
+    chapter: 'Electricity',
+    term: 'Resistance',
+    prompt: 'What property of a component opposes the flow of current and is measured in ohms?',
+    answer: 'Resistance',
+    difficulty: 'Medium',
+  },
+  {
+    subject: 'maths',
+    chapter: 'Algebra',
+    term: 'Quadratic',
+    prompt: 'What is the name of a polynomial equation with degree 2, such as ax² + bx + c = 0?',
+    answer: 'Quadratic',
+    difficulty: 'Hard',
+  },
+  {
+    subject: 'english',
+    chapter: 'Language Analysis',
+    term: 'Metaphor',
+    prompt: 'What device compares one thing to another by saying it is something else without using “like” or “as”?',
+    answer: 'Metaphor',
+    difficulty: 'Easy',
+  },
+  {
+    subject: 'economics',
+    chapter: 'Demand & Supply',
+    term: 'Elasticity',
+    prompt: 'What concept measures how responsive quantity demanded is to a change in price?',
+    answer: 'Price elasticity of demand',
+    difficulty: 'Hard',
+  },
+];
+
+const quickQuiz = [
+  { question: 'Which term describes the spread of particles from high concentration to low concentration?', choices: ['Diffusion', 'Osmosis', 'Active transport', 'Transpiration'], answer: 'Diffusion' },
+  { question: 'What word means the rate at which something changes over time in a reaction?', choices: ['Catalyst', 'Equilibrium', 'Rate', 'Energy'], answer: 'Rate' },
+  { question: 'Which term describes energy transferred per unit charge?', choices: ['Resistance', 'Voltage', 'Current', 'Power'], answer: 'Voltage' },
+];
+
+const progression = [
+  { label: 'Cards mastered', value: '1,248' },
+  { label: 'Streak', value: '17 days' },
+  { label: 'Accuracy', value: '92%' },
+  { label: 'XP', value: '4,680' },
+];
+
+const totalCards = subjects.reduce((sum, subject) => sum + subject.chapters.reduce((chapterSum, chapter) => chapterSum + chapter.cards, 0), 0);
+
+function App() {
+  const currentCard = keywordCards[0];
+  const subjectData = subjects[0];
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand-wrap">
+          <div className="brand-mark">K</div>
+          <div>
+            <p className="eyebrow">REVISION LAB</p>
+            <h1>KeyPulse</h1>
+          </div>
+        </div>
+
+        <nav className="nav">
+          <button className="nav-item active">Dashboard</button>
+          <button className="nav-item">Decks</button>
+          <button className="nav-item">Quest Mode</button>
+          <button className="nav-item">Progress</button>
+        </nav>
+
+        <div className="mini-card xp-card">
+          <span>Daily goal</span>
+          <strong>74%</strong>
+          <div className="progress-bar"><span /></div>
+          <small>12/16 cards</small>
+        </div>
+      </aside>
+
+      <main className="main-panel">
+        <header className="topbar">
+          <div>
+            <p className="eyebrow">Study flow</p>
+            <h2>Keyword blitz</h2>
+          </div>
+
+          <div className="top-actions">
+            <button className="ghost-btn">Filter</button>
+            <button className="primary-btn">+ New deck</button>
+          </div>
+        </header>
+
+        <section className="stat-grid">
+          {progression.map((item) => (
+            <div key={item.label} className="stat-card">
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+            </div>
+          ))}
+        </section>
+
+        <section className="hero-row">
+          <div className="flashcard-panel">
+            <div className="flashcard-header">
+              <span className="subject-pill" style={{ background: `${subjectData.color}22`, color: subjectData.color }}>
+                {subjectData.name}
+              </span>
+              <span className="chip subtle">Chapter: {currentCard.chapter}</span>
+            </div>
+
+            <div className="flashcard">
+              <p className="label">Prompt</p>
+              <h3>{currentCard.prompt}</h3>
+              <div className="flashcard-answer">
+                <span>Reveal answer</span>
+                <strong>{currentCard.answer}</strong>
+              </div>
+            </div>
+
+            <div className="score-row">
+              <button className="score-btn hard">Again</button>
+              <button className="score-btn">Hard</button>
+              <button className="score-btn good">Good</button>
+              <button className="score-btn easy">Easy</button>
+            </div>
+          </div>
+
+          <div className="quest-panel">
+            <div className="quest-header">
+              <p className="eyebrow">Quick play</p>
+              <h3>Rapid fire</h3>
+            </div>
+
+            {quickQuiz.map((item, index) => (
+              <div key={item.question} className="quiz-item">
+                <span className="quiz-index">0{index + 1}</span>
+                <p>{item.question}</p>
+                <div className="choice-grid">
+                  {item.choices.map((choice) => (
+                    <button key={choice} className={`choice ${choice === item.answer ? 'correct' : ''}`}>
+                      {choice}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="library-panel">
+          <div className="panel-title-row">
+            <div>
+              <p className="eyebrow">Library</p>
+              <h3>Subject decks</h3>
+            </div>
+            <button className="ghost-btn">See all</button>
+          </div>
+
+          <div className="deck-grid">
+            {subjects.map((subject) => (
+              <article key={subject.id} className="deck-card" style={{ borderColor: `${subject.color}55` }}>
+                <div className="deck-topline">
+                  <span className="subject-dot" style={{ background: subject.color }} />
+                  <span>{subject.short}</span>
+                </div>
+
+                <h4>{subject.name}</h4>
+
+                <ul>
+                  {subject.chapters.map((chapter) => (
+                    <li key={chapter.title}>
+                      <span>{chapter.title}</span>
+                      <strong>{chapter.cards}</strong>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default App;
